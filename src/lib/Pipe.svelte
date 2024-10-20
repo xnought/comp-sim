@@ -5,7 +5,7 @@
 <div style="display: flex;  width: 500px;">
 	<div>
 		<button on:click={() => (signal = !signal)}>power switch </button>
-		<span style="background: {signal ? 'lime' : 'red'};">
+		<span style="background: {signal ? 'steelblue' : 'red'};">
 			{signal ? "on" : "off"}
 		</span>
 	</div>

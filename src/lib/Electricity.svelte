@@ -109,6 +109,12 @@
 			<Simulator circuit={notGate()} />
 		</div>
 		<div>
+			Some of these wires can be merged, but again, I show branching (like
+			the wire branching from the middle splits the top into two). Again,
+			the edges aren't wires in this diagram, wires are separate nodes and
+			conceptual connections are edges.
+		</div>
+		<div>
 			<details>
 				<summary class="neon" style="cursor: pointer; --color: lime;">
 					In this same notation, you can represent the original
