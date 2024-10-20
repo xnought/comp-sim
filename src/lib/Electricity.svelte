@@ -1,4 +1,5 @@
 <script>
+	import { notGate, simpleNotCompleteCircuit, simpleSwitch } from "./circuit";
 	import Not from "./Not.svelte";
 	import Pipe from "./Pipe.svelte";
 	import Pipe2 from "./Pipe2.svelte";
@@ -96,20 +97,29 @@
 			operations so well. In my visualization, to show the property that
 			electricity takes the shorter path requires boolean operations in
 			the code itself. So it's almost like nature has those properties
-			built in, and we just combine them to look nicer in our brain.
+			built in, and we just combine them to look nicer in our brain. This
+			is a circular argument though because by definition we are
+			describing electricity with boolean logic.
 		</div>
 		<div>
-			This is not feasible to show larger circuits due to how manual the
-			code process was. So first let me change what I have into a
-			functional circuit renderer.
+			To change up notation, here I'll have a graph where wires are also
+			nodes and edges just show what is connected to what . Note that if
+			there is a branch, two new wires are created. So the not gate in
+			this notation looks like
+			<Simulator circuit={notGate()} />
 		</div>
 		<div>
-			battery(neg=switch(bulbA), pos=bulbA) which renders to the first one
+			<details>
+				<summary class="neon" style="cursor: pointer; --color: lime;">
+					In this same notation, you can represent the original
+					circuits too
+				</summary>
+				Incomplete circuit:
+				<Simulator circuit={simpleNotCompleteCircuit()} />
+
+				One switch:
+				<Simulator circuit={simpleSwitch()} />
+			</details>
 		</div>
-		<div>
-			batter(neg=wire(switch(), bulbA), pos=bulbA) which renders to the
-			not gate
-		</div>
-		<div>Simulator... <Simulator /></div>
 	</details>
 </div>
