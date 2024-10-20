@@ -4,7 +4,7 @@
 
 <main>
 	<div>
-		Electrical Simulations to create circuits
+		<h2>Electrical Simulations to create circuits</h2>
 		<Electricity />
 	</div>
 </main>
