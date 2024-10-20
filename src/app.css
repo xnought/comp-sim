@@ -5,10 +5,18 @@
 
 	color-scheme: light dark;
 	color: white;
-	text-shadow: lime 1px 0 10px;
 	background-color: black;
 }
 
 body {
 	margin: 0;
+}
+
+.neon {
+	--color: red;
+	text-shadow: var(--color) 1px 0 10px;
+}
+
+button {
+	cursor: pointer;
 }

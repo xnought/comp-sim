@@ -3,11 +3,11 @@
 </script>
 
 <main>
-	<div>
-		<h2>Electrical Simulations to create circuits</h2>
-		<Electricity />
-	</div>
+	<Electricity />
 </main>
 
 <style>
+	main {
+		padding: 20px;
+	}
 </style>
