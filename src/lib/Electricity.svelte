@@ -1,9 +1,23 @@
 <script>
-	import { notGate, simpleNotCompleteCircuit, simpleSwitch } from "./circuit";
+	import {
+		nandGate,
+		notFromNand,
+		notGate,
+		simpleNotCompleteCircuit,
+		simpleSwitch,
+		NAND,
+	} from "./circuit";
+	import Gates from "./Gates.svelte";
 	import Not from "./Not.svelte";
 	import Pipe from "./Pipe.svelte";
 	import Pipe2 from "./Pipe2.svelte";
 	import Simulator from "./Simulator.svelte";
+
+	const a = new NAND();
+	console.log(a.call(false, false));
+	console.log(a.call(true, false));
+	console.log(a.call(false, true));
+	console.log(a.call(true, true));
 </script>
 
 <div>
@@ -128,4 +142,51 @@
 			</details>
 		</div>
 	</details>
+
+	<div>
+		<b class="neon" style:--color="violet">
+			Now let's create the boolean gates which take in two inputs (two
+			switches) and output a single signal.
+		</b>
+	</div>
+	<div>
+		It turns out that you can create any other logic gate by using a NAND
+		gate (logical and not). This is weird. Think about the statement that
+		anything computable can be represented as manipulation bits with NAND
+		operations. Weird.
+	</div>
+	<div>
+		So let's create a NAND gate. It looks like a combination of the AND gate
+		and the NOT gate.
+	</div>
+	<div>
+		<div>0,0 → 1</div>
+		<div>0,1 → 1</div>
+		<div>1,0 → 1</div>
+		<div>1,1 → 0</div>
+	</div>
+	<div>
+		<b class="neon" style:--color="cyan">NAND Gate</b>: toggle to see
+		outputs given inputs
+		<Simulator circuit={nandGate()} />
+	</div>
+	<div>
+		Like I said, it looks like a combination of the AND and NOT gate. It's
+		really just adding another switch right after the first NOT switch.
+	</div>
+	<div>
+		Note that it reverts to a NOT gate for the 0,0 and 1,1 example. So we
+		can easily recreate a NOT gate from NAND by just feeding the same value
+		in.
+	</div>
+	<div>
+		<b class="neon" style:--color="red">NOT Gate</b> with NAND by copying
+		signal to control both switches
+		<Simulator circuit={nandGate()} sameSignals />
+	</div>
+	<div>
+		For a better representation going forward, I'll abstract the NAND into a
+		single node.
+		<Gates gatesCircuit={[]} />
+	</div>
 </div>

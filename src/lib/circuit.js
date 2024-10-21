@@ -38,7 +38,7 @@ export class Wire {
 	}
 }
 
-export class Circuit {
+export class ElectricalCircuit {
 	constructor(source, signal, other) {
 		this.source = source;
 		this.signal = signal;
@@ -113,7 +113,7 @@ export function simpleNotCompleteCircuit() {
 	const battery = new Power();
 	const light = new Signal();
 	const w1 = new Wire();
-	const circuit = new Circuit(battery, light, [w1]);
+	const circuit = new ElectricalCircuit(battery, light, [w1]);
 
 	circuit.connect(battery, w1);
 	circuit.connect(w1, light);
@@ -129,7 +129,7 @@ export function simpleSwitch() {
 	const s = new Switch();
 	const w2 = new Wire();
 
-	const circuit = new Circuit(battery, light, [w1, s, w2]);
+	const circuit = new ElectricalCircuit(battery, light, [w1, s, w2]);
 	circuit.connect(battery, s);
 	circuit.connect(s, w1);
 	circuit.connect(w1, light);
@@ -144,36 +144,128 @@ export function simpleSwitch() {
 export function notGate() {
 	const battery = new Power();
 	const light = new Signal();
-	const wires = Array(7)
+	const wires = Array(2)
 		.fill(0)
 		.map(() => new Wire());
 	const s = new Switch();
 
-	const circuit = new Circuit(battery, light, [...wires, s]);
+	const circuit = new ElectricalCircuit(battery, light, [...wires, s]);
+
 	circuit.connect(battery, wires[0]);
+	circuit.connect(wires[0], light);
+	circuit.connect(light, wires[1]);
+	circuit.connect(wires[1], battery);
+	circuit.connect(wires[0], s);
+	circuit.connect(s, wires[1]);
 
-	// top horizontal
-	circuit.connect(wires[0], wires[1]);
-	circuit.connect(wires[1], light);
-	circuit.connect(light, wires[2]);
-
-	// right vertical
-	circuit.connect(wires[2], wires[3]);
-
-	// bottom horizontal
-	circuit.connect(wires[3], wires[4]);
-	circuit.connect(wires[4], wires[5]);
-
-	// left vertical
-	circuit.connect(wires[5], battery);
-
-	// switch vertical in the middle
-	circuit.connect(wires[0], wires[6]);
-	circuit.connect(wires[6], s);
-	circuit.connect(s, wires[4]);
-
-	s.switchOn();
 	circuit.simulate();
 
 	return circuit;
+}
+
+export function nandGate(a = true, b = true) {
+	const battery = new Power();
+	const light = new Signal();
+	const wires = Array(4)
+		.fill(0)
+		.map(() => new Wire());
+	const switches = Array(2)
+		.fill(0)
+		.map(() => new Switch());
+
+	const circuit = new ElectricalCircuit(battery, light, [
+		...wires,
+		...switches,
+	]);
+
+	circuit.connect(battery, wires[0]);
+	circuit.connect(wires[0], light);
+	circuit.connect(light, wires[1]);
+	circuit.connect(wires[1], battery);
+	circuit.connect(wires[0], switches[0]);
+	circuit.connect(switches[0], switches[1]);
+	circuit.connect(switches[1], wires[1]);
+
+	if (!a) switches[0].switchOff();
+	if (!b) switches[1].switchOff();
+	circuit.simulate();
+
+	return circuit;
+}
+
+export function notFromNand() {
+	const battery = new Power();
+	const light = new Signal();
+	const wires = Array(4)
+		.fill(0)
+		.map(() => new Wire());
+	const switches = Array(2)
+		.fill(0)
+		.map(() => new Switch());
+
+	const circuit = new ElectricalCircuit(battery, light, [
+		...wires,
+		...switches,
+	]);
+
+	circuit.connect(battery, wires[0]);
+	circuit.connect(wires[0], light);
+	circuit.connect(light, wires[1]);
+	circuit.connect(wires[1], battery);
+	circuit.connect(wires[0], switches[0]);
+	circuit.connect(switches[0], switches[1]);
+	circuit.connect(switches[1], wires[1]);
+
+	circuit.simulate();
+
+	return circuit;
+}
+
+export class NAND {
+	/**
+	 * @param {boolean} simulate is true if we want to do the low-level electrical simulation (this.circuit is exposed) or false to just do !(a&&b)
+	 */
+	constructor(simulate = false) {
+		// simulation takes longer and uses electrical simulation
+		this.simulate = simulate;
+		if (simulate) {
+			this.battery = new Power();
+			this.light = new Signal();
+			this.wires = Array(4)
+				.fill(0)
+				.map(() => new Wire());
+			this.switches = Array(2)
+				.fill(0)
+				.map(() => new Switch());
+			this.circuit = new ElectricalCircuit(this.battery, this.light, [
+				...this.wires,
+				...this.switches,
+			]);
+			this.circuit.connect(this.battery, this.wires[0]);
+			this.circuit.connect(this.wires[0], this.light);
+			this.circuit.connect(this.light, this.wires[1]);
+			this.circuit.connect(this.wires[1], this.battery);
+			this.circuit.connect(this.wires[0], this.switches[0]);
+			this.circuit.connect(this.switches[0], this.switches[1]);
+			this.circuit.connect(this.switches[1], this.wires[1]);
+		}
+	}
+	call(a = false, b = false) {
+		if (this.simulate) {
+			this.circuit.reset();
+			this.switches[0].on = a;
+			this.switches[1].on = b;
+			this.circuit.simulate();
+			return Boolean(this.light.data);
+		} else return !(a && b);
+	}
+}
+
+export class GatesCircuit {
+	constructor() {
+		this.root = undefined;
+	}
+	// call(bits) {
+	// 	return [];
+	// }
 }

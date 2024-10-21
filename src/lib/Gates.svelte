@@ -2,7 +2,7 @@
 	import * as myc from "@apple/mycelium";
 	import "@apple/mycelium/dist/style.css";
 
-	export let circuit;
+	export let gatesCircuit;
 	export let width = 500;
 	export let height = 500;
 
@@ -77,26 +77,26 @@
 	}
 	let el;
 	let viewer;
-	$: if (el) {
-		const network = new myc.Network();
-		circuit.resetNodeIds();
-		createMycNodes(network, circuit);
-		createMycEdges(network, circuit);
-		if (viewer) {
-			console.log(circuit);
-			viewer.setNetwork(network);
-		} else {
-			viewer = myc.NetworkViewer.create(network, el, {
-				showBreadcrumbs: false,
-				minimap: false,
-				watermark: false,
-				showResetView: false,
-			});
-		}
-	}
+	// $: if (el) {
+	// 	const network = new myc.Network();
+	// 	circuit.resetNodeIds();
+	// 	createMycNodes(network, circuit);
+	// 	createMycEdges(network, circuit);
+	// 	if (viewer) {
+	// 		console.log(circuit);
+	// 		viewer.setNetwork(network);
+	// 	} else {
+	// 		viewer = myc.NetworkViewer.create(network, el, {
+	// 			showBreadcrumbs: false,
+	// 			minimap: false,
+	// 			watermark: false,
+	// 			showResetView: false,
+	// 		});
+	// 	}
+	// }
 </script>
 
 <div
 	bind:this={el}
-	style="width: {width}px; height: {height}px; outline: 1px dashed lightgrey; border-radius: 3px;"
+	style="width: {width}px; height: {height}px; outline: 1px dashed slateblue; border-radius: 3px;"
 />
