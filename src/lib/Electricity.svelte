@@ -1,11 +1,17 @@
 <script>
+	import BinaryTruthTable from "./BinaryTruthTable.svelte";
 	import {
 		nandGate,
 		notFromNand,
 		notGate,
 		simpleNotCompleteCircuit,
 		simpleSwitch,
+		NANDGate,
 		NAND,
+		NOT,
+		AND,
+		OR,
+		XOR,
 	} from "./circuit";
 	import Gates from "./Gates.svelte";
 	import Not from "./Not.svelte";
@@ -13,11 +19,33 @@
 	import Pipe2 from "./Pipe2.svelte";
 	import Simulator from "./Simulator.svelte";
 
-	const a = new NAND();
-	console.log(a.call(false, false));
-	console.log(a.call(true, false));
-	console.log(a.call(false, true));
-	console.log(a.call(true, true));
+	console.log("NOT");
+	console.log(NOT(false));
+	console.log(NOT(true));
+
+	console.log("NAND");
+	console.log(NAND(false, false));
+	console.log(NAND(false, true));
+	console.log(NAND(true, false));
+	console.log(NAND(true, true));
+
+	console.log("AND");
+	console.log(AND(false, false));
+	console.log(AND(false, true));
+	console.log(AND(true, false));
+	console.log(AND(true, true));
+
+	console.log("OR");
+	console.log(OR(false, false));
+	console.log(OR(false, true));
+	console.log(OR(true, false));
+	console.log(OR(true, true));
+
+	console.log("XOR");
+	console.log(XOR(false, false));
+	console.log(XOR(false, true));
+	console.log(XOR(true, false));
+	console.log(XOR(true, true));
 </script>
 
 <div>
@@ -141,52 +169,51 @@
 				<Simulator circuit={simpleSwitch()} />
 			</details>
 		</div>
-	</details>
 
-	<div>
-		<b class="neon" style:--color="violet">
-			Now let's create the boolean gates which take in two inputs (two
-			switches) and output a single signal.
-		</b>
-	</div>
-	<div>
-		It turns out that you can create any other logic gate by using a NAND
-		gate (logical and not). This is weird. Think about the statement that
-		anything computable can be represented as manipulation bits with NAND
-		operations. Weird.
-	</div>
-	<div>
-		So let's create a NAND gate. It looks like a combination of the AND gate
-		and the NOT gate.
-	</div>
-	<div>
-		<div>0,0 → 1</div>
-		<div>0,1 → 1</div>
-		<div>1,0 → 1</div>
-		<div>1,1 → 0</div>
-	</div>
-	<div>
-		<b class="neon" style:--color="cyan">NAND Gate</b>: toggle to see
-		outputs given inputs
-		<Simulator circuit={nandGate()} />
-	</div>
-	<div>
-		Like I said, it looks like a combination of the AND and NOT gate. It's
-		really just adding another switch right after the first NOT switch.
-	</div>
-	<div>
-		Note that it reverts to a NOT gate for the 0,0 and 1,1 example. So we
-		can easily recreate a NOT gate from NAND by just feeding the same value
-		in.
-	</div>
-	<div>
-		<b class="neon" style:--color="red">NOT Gate</b> with NAND by copying
-		signal to control both switches
-		<Simulator circuit={nandGate()} sameSignals />
-	</div>
-	<div>
-		For a better representation going forward, I'll abstract the NAND into a
-		single node.
-		<Gates gatesCircuit={[]} />
-	</div>
+		<div>
+			<b class="neon" style:--color="violet">
+				Now let's create the boolean gates which take in two inputs (two
+				switches) and output a single signal.
+			</b>
+		</div>
+		<div>
+			It turns out that you can create any other logic gate by using a
+			NAND gate (logical and not). This is weird. Think about the
+			statement that anything computable can be represented as
+			manipulation bits with NAND operations. Weird.
+		</div>
+		<div>
+			So let's create a NAND gate. It looks like a combination of the AND
+			gate and the NOT gate.
+		</div>
+		<div>
+			<BinaryTruthTable func={NAND} />
+		</div>
+		<div>
+			<b class="neon" style:--color="cyan">NAND Gate</b>: toggle to see
+			outputs given inputs
+			<Simulator circuit={nandGate()} />
+		</div>
+		<div>
+			Like I said, it looks like a combination of the AND and NOT gate.
+			It's really just adding another switch right after the first NOT
+			switch.
+		</div>
+		<div>
+			Note that it reverts to a NOT gate for the 0,0 and 1,1 example. So
+			we can easily recreate a NOT gate from NAND by just feeding the same
+			value in.
+		</div>
+		<div>
+			<b class="neon" style:--color="red">NOT Gate</b> with NAND by
+			copying signal to control both switches
+			<Simulator circuit={nandGate()} sameSignals />
+		</div>
+		<div>
+			<b class="neon" style:--color="lime">AND Gate</b> is just
+			NOT(NAND(a, b)) -> AND(a,b). So I can combine the previous two
+			circuits.
+			<BinaryTruthTable func={AND} />
+		</div>
+	</details>
 </div>

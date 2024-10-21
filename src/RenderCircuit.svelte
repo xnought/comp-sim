@@ -6,14 +6,14 @@
 	export let width = 500;
 	export let height = 500;
 
-	function createNode(nodeId, on = false, signal = false) {
+	function createNode(nodeId, title, on = false, signal = false) {
 		let regOn = on ? "yellow" : "lightgrey";
 
 		return new myc.ui.Node(
 			nodeId,
 			new myc.ui.VStack(
 				// new myc.ui.Text("Object").with({ fontWeight: 600 }),
-				new myc.ui.Text(nodeId)
+				new myc.ui.Text(title)
 			)
 		)
 			.with({
@@ -29,8 +29,8 @@
 			});
 	}
 
-	function addNode(network, id, on = false, regOn = false) {
-		network.setNode(id, createNode(id, on, regOn));
+	function addNode(network, id, name, on = false, regOn = false) {
+		network.setNode(id, createNode(id, name, on, regOn));
 	}
 	function createMycNodes(network, circuit) {
 		let wireCounter = 0;
@@ -55,7 +55,7 @@
 				on = true;
 			}
 			if (node.data === 1) on = true;
-			addNode(network, node.nodeId, on, signal);
+			addNode(network, node.nodeId, node.name, on, signal);
 			for (const c of node.out) {
 				if (c.name === "power" || c.nodeId !== undefined) continue;
 				recur(c);

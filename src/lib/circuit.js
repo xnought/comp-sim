@@ -221,51 +221,57 @@ export function notFromNand() {
 	return circuit;
 }
 
-export class NAND {
-	/**
-	 * @param {boolean} simulate is true if we want to do the low-level electrical simulation (this.circuit is exposed) or false to just do !(a&&b)
-	 */
-	constructor(simulate = false) {
+export class NANDGate {
+	constructor() {
 		// simulation takes longer and uses electrical simulation
-		this.simulate = simulate;
-		if (simulate) {
-			this.battery = new Power();
-			this.light = new Signal();
-			this.wires = Array(4)
-				.fill(0)
-				.map(() => new Wire());
-			this.switches = Array(2)
-				.fill(0)
-				.map(() => new Switch());
-			this.circuit = new ElectricalCircuit(this.battery, this.light, [
-				...this.wires,
-				...this.switches,
-			]);
-			this.circuit.connect(this.battery, this.wires[0]);
-			this.circuit.connect(this.wires[0], this.light);
-			this.circuit.connect(this.light, this.wires[1]);
-			this.circuit.connect(this.wires[1], this.battery);
-			this.circuit.connect(this.wires[0], this.switches[0]);
-			this.circuit.connect(this.switches[0], this.switches[1]);
-			this.circuit.connect(this.switches[1], this.wires[1]);
-		}
+		this.battery = new Power();
+		this.light = new Signal();
+		this.wires = Array(4)
+			.fill(0)
+			.map(() => new Wire());
+		this.switches = Array(2)
+			.fill(0)
+			.map(() => new Switch());
+		this.circuit = new ElectricalCircuit(this.battery, this.light, [
+			...this.wires,
+			...this.switches,
+		]);
+		this.circuit.connect(this.battery, this.wires[0]);
+		this.circuit.connect(this.wires[0], this.light);
+		this.circuit.connect(this.light, this.wires[1]);
+		this.circuit.connect(this.wires[1], this.battery);
+		this.circuit.connect(this.wires[0], this.switches[0]);
+		this.circuit.connect(this.switches[0], this.switches[1]);
+		this.circuit.connect(this.switches[1], this.wires[1]);
 	}
-	call(a = false, b = false) {
-		if (this.simulate) {
-			this.circuit.reset();
-			this.switches[0].on = a;
-			this.switches[1].on = b;
-			this.circuit.simulate();
-			return Boolean(this.light.data);
-		} else return !(a && b);
+	call(a, b) {
+		this.circuit.reset();
+		this.switches[0].on = a;
+		this.switches[1].on = b;
+		this.circuit.simulate();
+		return this.circuit.signal.data;
 	}
 }
 
-export class GatesCircuit {
+const nandgate = new NANDGate();
+export function NAND(a, b) {
+	return nandgate.call(a, b);
+}
+export function NOT(a) {
+	return NAND(a, a);
+}
+export function AND(a, b) {
+	return NOT(NAND(a, b));
+}
+export function OR(a, b) {
+	return NOT(AND(NOT(a), NOT(b)));
+}
+export function XOR(a, b) {
+	return AND(OR(a, b), NAND(a, b));
+}
+
+export class GluedCircuits {
 	constructor() {
-		this.root = undefined;
+		//
 	}
-	// call(bits) {
-	// 	return [];
-	// }
 }
