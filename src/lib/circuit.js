@@ -254,24 +254,29 @@ export class NANDGate {
 }
 
 const nandgate = new NANDGate();
+export function INPUT(a) {
+	return { name: "INPUT", in: a, value: a };
+}
 export function NAND(a, b) {
-	return nandgate.call(a, b);
+	return { name: "NAND", in: [a, b], value: nandgate.call(a.value, b.value) };
 }
 export function NOT(a) {
-	return NAND(a, a);
+	const repr = NAND(a, a);
+	return { name: "NOT", in: a, out: repr, value: repr.value };
 }
 export function AND(a, b) {
-	return NOT(NAND(a, b));
+	const repr = NOT(NAND(a, b));
+	return { name: "AND", in: [a, b], out: repr, value: repr.value };
 }
 export function OR(a, b) {
-	return NOT(AND(NOT(a), NOT(b)));
+	const repr = NAND(NOT(a), NOT(b));
+	return { name: "OR", in: [a, b], out: repr, value: repr.value };
 }
 export function XOR(a, b) {
-	return AND(OR(a, b), NAND(a, b));
+	const repr = AND(OR(a, b), NAND(a, b));
+	return { name: "XOR", in: [a, b], out: repr, value: repr.value };
 }
 
-export class GluedCircuits {
-	constructor() {
-		//
-	}
+export function output(obj) {
+	return obj.value;
 }

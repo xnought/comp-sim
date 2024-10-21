@@ -12,6 +12,8 @@
 		AND,
 		OR,
 		XOR,
+		output,
+		INPUT,
 	} from "./circuit";
 	import Gates from "./Gates.svelte";
 	import Not from "./Not.svelte";
@@ -19,33 +21,25 @@
 	import Pipe2 from "./Pipe2.svelte";
 	import Simulator from "./Simulator.svelte";
 
-	console.log("NOT");
-	console.log(NOT(false));
-	console.log(NOT(true));
+	function unary(name, func) {
+		console.log(name);
+		console.log("0 ->", output(INPUT(func(0))));
+		console.log("1 ->", output(INPUT(func(1))));
+	}
+	unary("NOT", NOT);
 
-	console.log("NAND");
-	console.log(NAND(false, false));
-	console.log(NAND(false, true));
-	console.log(NAND(true, false));
-	console.log(NAND(true, true));
+	function binary(name, func) {
+		console.log(name);
+		console.log("0,0 ->", output(func(INPUT(0), INPUT(0))));
+		console.log("1,0 ->", output(func(INPUT(1), INPUT(0))));
+		console.log("0,1 ->", output(func(INPUT(0), INPUT(1))));
+		console.log("1,1 ->", output(func(INPUT(1), INPUT(1))));
+	}
 
-	console.log("AND");
-	console.log(AND(false, false));
-	console.log(AND(false, true));
-	console.log(AND(true, false));
-	console.log(AND(true, true));
-
-	console.log("OR");
-	console.log(OR(false, false));
-	console.log(OR(false, true));
-	console.log(OR(true, false));
-	console.log(OR(true, true));
-
-	console.log("XOR");
-	console.log(XOR(false, false));
-	console.log(XOR(false, true));
-	console.log(XOR(true, false));
-	console.log(XOR(true, true));
+	binary("NAND", NAND);
+	binary("AND", AND);
+	binary("OR", OR);
+	binary("XOR", XOR);
 </script>
 
 <div>
