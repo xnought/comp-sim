@@ -41,14 +41,17 @@
 		console.log("1,1 ->", OUTPUT(BINARYFUNC(INPUT(1), INPUT(1))));
 	}
 
-	// binary("NAND", NAND);
-	// binary("AND", AND);
-	// binary("OR", OR);
-	// binary("XOR", XOR);
-	const oneone = [INPUT(0), INPUT(0), INPUT(1)];
-	const zeroone = [INPUT(0), INPUT(1), INPUT(1)];
+	const n = 2;
+	const a = Array(n)
+		.fill(0)
+		.map(() => INPUT(1));
+	const b = Array(n)
+		.fill(0)
+		.map(() => INPUT(1));
 	// result should be 4. But we don't have 4, so we can max out 1s and with carry 1
-	console.log(NBITADDEROUTPUT(NBITADDER(oneone, zeroone)));
+	console.time("nbit");
+	console.log(NBITADDEROUTPUT(NBITADDER(a, b)));
+	console.timeEnd("nbit");
 </script>
 
 <div>
