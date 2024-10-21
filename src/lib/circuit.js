@@ -277,6 +277,70 @@ export function XOR(a, b) {
 	return { name: "XOR", in: [a, b], out: repr, value: repr.value };
 }
 
-export function output(obj) {
+export function OUTPUT(obj) {
 	return obj.value;
+}
+export function OUTPUTFULL(obj) {
+	return obj.value;
+}
+
+export function HALFADDER(a, b) {
+	// 0+1 -> 1, c0
+	// 1+0 -> 1, c0
+	// 0+1 -> 1, c0
+	// 1+1 -> 1, c1
+	const res = XOR(a, b);
+	const outcarry = AND(a, b);
+	return [
+		{
+			name: "HALFADDER",
+			in: [a, b],
+			out: res,
+			value: res.value,
+		},
+		{
+			name: "HALFADDER_CARRY",
+			in: [a, b],
+			out: outcarry,
+			value: outcarry.value,
+		},
+	];
+}
+
+export function FULLADDER(a, b, carry) {
+	const res = XOR(XOR(a, b), carry);
+	const outcarry = OR(OR(AND(a, b), AND(a, carry)), AND(b, carry));
+	return [
+		{
+			name: "FULLADDER",
+			in: [a, b, carry],
+			out: res,
+			value: res.value,
+		},
+		{
+			name: "FULLADDER_CARRY",
+			in: [a, b, carry],
+			out: outcarry,
+			value: outcarry.value,
+		},
+	];
+}
+
+export function NBITADDER(as, bs) {
+	const n = as.length;
+	let result = Array(n);
+	const start = HALFADDER(as[n - 1], bs[n - 1]);
+	result[n - 1] = start;
+	for (let i = n - 2; i >= 0; i--) {
+		const a = as[i];
+		const b = bs[i];
+		const outcarry = result[i + 1][1];
+		const out = FULLADDER(a, b, outcarry);
+		result[i] = out;
+	}
+	return result;
+}
+
+export function NBITADDEROUTPUT(o) {
+	return [o.map((d) => d[0].value), o[0][1].value]; // [0] is output bits, [1] is carry bit
 }

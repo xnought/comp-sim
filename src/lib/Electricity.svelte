@@ -12,8 +12,13 @@
 		AND,
 		OR,
 		XOR,
-		output,
+		OUTPUT,
 		INPUT,
+		HALFADDER,
+		FULLADDER,
+		OUTPUTFULL,
+		NBITADDER,
+		NBITADDEROUTPUT,
 	} from "./circuit";
 	import Gates from "./Gates.svelte";
 	import Not from "./Not.svelte";
@@ -21,31 +26,37 @@
 	import Pipe2 from "./Pipe2.svelte";
 	import Simulator from "./Simulator.svelte";
 
-	function unary(name, func) {
+	function unary(name, UNARYFUNC) {
 		console.log(name);
-		console.log("0 ->", output(INPUT(func(0))));
-		console.log("1 ->", output(INPUT(func(1))));
+		console.log("0 ->", OUTPUT(INPUT(UNARYFUNC(0))));
+		console.log("1 ->", OUTPUT(INPUT(UNARYFUNC(1))));
 	}
-	unary("NOT", NOT);
+	// unary("NOT", NOT);
 
-	function binary(name, func) {
+	function binary(name, BINARYFUNC) {
 		console.log(name);
-		console.log("0,0 ->", output(func(INPUT(0), INPUT(0))));
-		console.log("1,0 ->", output(func(INPUT(1), INPUT(0))));
-		console.log("0,1 ->", output(func(INPUT(0), INPUT(1))));
-		console.log("1,1 ->", output(func(INPUT(1), INPUT(1))));
+		console.log("0,0 ->", OUTPUT(BINARYFUNC(INPUT(0), INPUT(0))));
+		console.log("1,0 ->", OUTPUT(BINARYFUNC(INPUT(1), INPUT(0))));
+		console.log("0,1 ->", OUTPUT(BINARYFUNC(INPUT(0), INPUT(1))));
+		console.log("1,1 ->", OUTPUT(BINARYFUNC(INPUT(1), INPUT(1))));
 	}
 
-	binary("NAND", NAND);
-	binary("AND", AND);
-	binary("OR", OR);
-	binary("XOR", XOR);
+	// binary("NAND", NAND);
+	// binary("AND", AND);
+	// binary("OR", OR);
+	// binary("XOR", XOR);
+	const oneone = [INPUT(0), INPUT(0), INPUT(1)];
+	const zeroone = [INPUT(0), INPUT(1), INPUT(1)];
+	// result should be 4. But we don't have 4, so we can max out 1s and with carry 1
+	console.log(NBITADDEROUTPUT(NBITADDER(oneone, zeroone)));
 </script>
 
 <div>
 	<details open>
 		<summary class="neon" style="cursor: pointer; --color: lime;"
-			><b>Electrical Sim</b></summary
+			><b
+				>Electrical + Logic Gates Simulation (final example n bit adder)</b
+			></summary
 		>
 		<div>
 			I want to simulate the basic properties of electricity here. I want
@@ -204,10 +215,25 @@
 			<Simulator circuit={nandGate()} sameSignals />
 		</div>
 		<div>
-			<b class="neon" style:--color="lime">AND Gate</b> is just
-			NOT(NAND(a, b)) -> AND(a,b). So I can combine the previous two
-			circuits.
-			<BinaryTruthTable func={AND} />
+			<b class="neon" style:--color="lime">AND Gate</b> is just NOT(NAND(a,
+			b)) -> AND(a,b). So I can combine the previous two circuits. As you can
+			see above, the logic can be recursively merged into a circuit which is
+			probably smaller in footprint. But this sucks for modularity for my purposes
+			so I'll just functionally compose NANDs from now on.
+		</div>
+		<div>
+			I can then keep doing this for the rest of the functions. Since I
+			want to construct an n bit adder, this should be as easy as chaining
+			AND, XOR together in a certain way.
+		</div>
+		<div>
+			I am tired of writing so I'll just end it off with that with no
+			further explanation <span class="neon" style:--color="deeppink"
+				>¯\_(ツ)_/¯</span
+			>. Here you go, n bit adder all NANDs:
+		</div>
+		<div>
+			{1}
 		</div>
 	</details>
 </div>
